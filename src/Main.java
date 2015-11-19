@@ -6,10 +6,17 @@ import java.util.Scanner;
  */
 public class Main {
 
+    //region Attributes
     private static final String PATH = "C:\\RAID5\\";
+    private static File disk0;
+    private static File disk1;
+    private static File parity;
+    private static File file;
+    //endregion
 
+    //region PrivateMethods
     //Converte o arquivo em bytes
-    public static byte[] parseFileToByte(File file){
+    private static byte[] parseFileToByte(File file){
 
         int lengthFile = (int)file.length();
         byte[] bytesArray = new byte[lengthFile];
@@ -30,34 +37,30 @@ public class Main {
     }
 
     //Cria diretórios que representaram os disco 0, 1 e de paridade
-    public static void createDisks(){
+    private static void createDisks(){
 
-        File disk0 = new File(PATH + "Disk0");
-        File disk1 = new File(PATH + "Disk1");
-        File parity = new File(PATH + "Parity");
-        boolean isCreated;
+        disk0 = new File(PATH + "Disk0");
+        disk1 = new File(PATH + "Disk1");
+        parity = new File(PATH + "Parity");
 
         if (!disk0.exists()){
-            isCreated = disk0.mkdirs();
-            if (!isCreated) System.out.println("Disk0 não pode ser criado!");
+            if (!disk0.mkdirs()) System.out.println("Disk0 não pode ser criado!");
             else System.out.println("Disk0 criado com sucesso!");
         }
         if (!disk1.exists()){
-            isCreated = disk1.mkdirs();
-            if (!isCreated) System.out.println("Disk1 não pode ser criado!");
+            if (!disk1.mkdirs()) System.out.println("Disk1 não pode ser criado!");
             else System.out.println("Disk1 criado com sucesso!");
         }
         if (!parity.exists()){
-            isCreated = parity.mkdirs();
-            if (!isCreated) System.out.println("Parity não pode ser criado!");
+            if (!parity.mkdirs()) System.out.println("Parity não pode ser criado!");
             else System.out.println("Parity criado com sucesso!");
         }
     }
 
     //Cria o arquivo
-    public static void creteFile(){
+    private static void creteFile(){
         try {
-            FileWriter file = new FileWriter(PATH + "Hino.txt");
+            file = new File(PATH + "Hino.txt");
             PrintWriter w = new PrintWriter(file);
 
             w.println("Glória do desporto nacional");
@@ -92,7 +95,7 @@ public class Main {
             w.println("Segue a tua senda de vitórias");
             w.println("Colorado das glórias");
             w.println("Orgulho do Brasil");
-            file.close();
+            w.close();
             System.out.println("Arquivo criado com sucesso!");
         } catch (IOException e) {
             System.out.println("Não foi possível criar o arquivo solicitado!");
@@ -100,41 +103,50 @@ public class Main {
     }
 
     //Grava os arquivos de bytes nos discos
-    public static void writeByteFileInDisk(byte[] arrayByte){
+    private static void writeFileLikeByteInDisk(byte[] arrayByte){
 
     }
 
     //Apaga um disco para teste de recuperação da paridade
-    public static void deleteDisk(){
+    private static void deleteDisk(){
 
         Scanner sc = new Scanner(System.in);
-        File diskForRemove;
 
+        System.out.println("--Remover disco--");
         System.out.println("Escolha o disco:");
-        System.out.println("0. Disco 0;");
-        System.out.println("1. Disco 1.");
+        System.out.println("0. Disk0;");
+        System.out.println("1. Disk1.");
 
         System.out.printf("Disco: ");
         int option = sc.nextInt();
         switch (option){
             case 0:
-                diskForRemove = new File(PATH + "Disk0");
-                if (!diskForRemove.delete()) System.out.println("Disco0 não pode ser deletado!");
-                else System.out.println("Disco0 foi deletado com sucesso!");
+                if (disk0.exists()) {
+                    if (!disk0.delete()) System.out.println("Disk0 não pode ser deletado!");
+                    else System.out.println("Disk0 foi deletado com sucesso!");
+                } else{
+                    System.out.println("O disco solicitado não foi encontrado");
+                }
                 break;
             case 1:
-                diskForRemove = new File(PATH + "Disk1");
-                if (!diskForRemove.delete()) System.out.println("Disco1 não pode ser deletado!");
-                else System.out.println("Disco1 foi deletado com sucesso!");
+                if (disk0.exists()) {
+                    if (!disk1.delete()) System.out.println("Disk1 não pode ser deletado!");
+                    else System.out.println("Disk1 foi deletado com sucesso!");
+                } else {
+                    System.out.println("O disco solicitado não foi encontrado");
+                }
                 break;
         }
 
     }
 
     //Recupera o disco com o disco de paridade
+    private static void recoveryDisk(){
 
-    public static void main(String[] args){
-        createDisks();
-        creteFile();
+    }
+    //endregion
+
+    public static void main(String[] args) throws FileNotFoundException {
+
     }
 }
