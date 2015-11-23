@@ -141,8 +141,18 @@ public class Main {
     }
 
     //Recupera o disco com o disco de paridade
-    private static void recoveryDisk(){
+    private static [] recoveryDisk(int[] disk, int[] parity){
+        int[] recoveryDisk;
 
+        for (int element : disk) {
+            if(parity[element] == 0) {
+                recoveryDisk[element] = disk[element];
+            } else if (disk[element] == 0) {
+                recoveryDisk[element] = 1;
+            } else {
+                recoveryDisk[element] = 0;
+            }
+        }
     }
     //endregion
 
