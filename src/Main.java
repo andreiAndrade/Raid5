@@ -28,7 +28,7 @@ public class Main {
             fileLikeStream.read(bytesArray, 0, lengthFile);
 
         } catch (FileNotFoundException fnfex) {
-            System.out.println("Aruivo não encontrado!");
+            System.out.println("Arquivo não encontrado!");
         } catch (IOException ioex) {
             System.out.println("Erro inesperado!");
         }
@@ -57,6 +57,20 @@ public class Main {
         }
     }
 
+    //cria paridade dos discos
+    private static int[] fillParity(int[] disk0, int[] disk1) {
+        int[] parity = new int[disk0.length];
+        
+        for(int element : parity) {
+            if(disk0[element] == disk1[element]) {
+                parity[element] = 0;
+            } else {
+                parity[element] = 1;
+            }
+        }
+        return parity;
+    }
+    
     //Cria o arquivo
     private static void creteFile(){
         try {
@@ -141,18 +155,20 @@ public class Main {
     }
 
     //Recupera o disco com o disco de paridade
-    private static [] recoveryDisk(int[] disk, int[] parity){
-        int[] recoveryDisk;
+    private static int[] recoveringDisk(int[] disk, int[] parity){
+        int[] recoveredDisk = new int[disk.length];
 
         for (int element : disk) {
             if(parity[element] == 0) {
-                recoveryDisk[element] = disk[element];
+                recoveredDisk[element] = disk[element];
             } else if (disk[element] == 0) {
-                recoveryDisk[element] = 1;
+                recoveredDisk[element] = 1;
             } else {
-                recoveryDisk[element] = 0;
+                recoveredDisk[element] = 0;
             }
         }
+        
+        return recoveredDisk;
     }
     //endregion
 
