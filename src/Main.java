@@ -1,9 +1,10 @@
 import java.io.*;
 import java.util.Scanner;
 
-/**
- * Created by Andrei on 17/11/2015.
- */
+//TO DO
+//* write disk0, disk1 and parity on real files
+//* check if the file was deleted to then recover it
+
 public class Main {
 
     //region Attributes
@@ -18,14 +19,14 @@ public class Main {
     //Converte o arquivo em bytes
     private static byte[] parseFileToByte(File file){
 
-        int lengthFile = (int)file.length();
-        byte[] bytesArray = new byte[lengthFile];
+        int fileLength = (int)file.length();
+        byte[] bytesArray = new byte[fileLength];
         FileInputStream fileLikeStream  = null;
 
         try {
 
             fileLikeStream = new FileInputStream(file);
-            fileLikeStream.read(bytesArray, 0, lengthFile);
+            fileLikeStream.read(bytesArray, 0, fileLength);
 
         } catch (FileNotFoundException fnfex) {
             System.out.println("Arquivo não encontrado!");
@@ -58,21 +59,21 @@ public class Main {
     }
 
     //cria paridade dos discos
-    private static int[] fillParity(int[] disk0, int[] disk1) {
-        int[] parity = new int[disk0.length];
+    private static byte[] fillParity(byte[] disk0, byte[] disk1) {
+        byte[] parity = new byte[disk0.length];
         
-        for(int element : parity) {
-            if(disk0[element] == disk1[element]) {
-                parity[element] = 0;
-            } else {
-                parity[element] = 1;
-            }
+        for(int i = 0; i < parity.length; i++) {
+            parity[i] = disk0[i] - disk1[i];
+
         }
+
         return parity;
     }
     
+
+
     //Cria o arquivo
-    private static void creteFile(){
+    private static void createFile(){
         try {
             file = new File(PATH + "Hino.txt");
             PrintWriter w = new PrintWriter(file);
@@ -155,24 +156,41 @@ public class Main {
     }
 
     //Recupera o disco com o disco de paridade
-    private static int[] recoveringDisk(int[] disk, int[] parity){
-        int[] recoveredDisk = new int[disk.length];
-
-        for (int element : disk) {
-            if(parity[element] == 0) {
-                recoveredDisk[element] = disk[element];
-            } else if (disk[element] == 0) {
-                recoveredDisk[element] = 1;
-            } else {
-                recoveredDisk[element] = 0;
-            }
-        }
+    private static byte[] recoverDisk(byte[] disk0, byte[] parity) {
+        byte[] recovered = new byte[disk0.length];
         
-        return recoveredDisk;
+        for(int i = 0; i < parity.length; i++) {
+            recovered[i] = disk0[i] + parity[i];
+
+        }
+
+        return recovered;
     }
     //endregion
 
     public static void main(String[] args) throws FileNotFoundException {
+
+        int fileLength = (int)file.length();
+        byte[] bytesArray = new byte[lengthFile];
+
+        bytesArray = parseFileToByte(file);
+
+        int count = 0;
+
+        byte[] disk0;
+        byte[] disk1;
+        byte[] parity;
+
+        for(byte element : bytesArray) {
+            if(count < (bytesArray/2)) {
+                disk0[count] = element;
+            } else {
+                disk1[count] = element;
+            }
+        }
+
+        parity = fillParity(disk0, disk1);
+
 
     }
 }
