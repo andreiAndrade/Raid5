@@ -192,6 +192,21 @@ public class Main {
                 disk1Byte[count] = element;
             }
         }
+ 
+        //call method to fill the parity disk
+         parity = fillParity(disk0, disk1);
+ 
+        //write disks into real files
+        try {
+            disk0 = new File(PATH + "disk0.txt");
+            PrintWriter w = new PrintWriter(disk0);
+            for(byte element : disk0Byte) {
+                w.println(element);
+            }
+            System.out.println("Arquivo criado com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Não foi possível criar o arquivo solicitado!");
+        }
 
         //call method to fill the parity disk
         parity = fillParity(disk0, disk1);
@@ -219,6 +234,7 @@ public class Main {
             System.out.println("Não foi possível criar o arquivo solicitado!");
         }
 
+
         try {
             parity = new File(PATH + "parity.txt");
             PrintWriter w = new PrintWriter(parity);
@@ -229,8 +245,7 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Não foi possível criar o arquivo solicitado!");
         }
-        
-
+ 
     }
 
     // private static File writeDiskInFile(byte[] disk) {
