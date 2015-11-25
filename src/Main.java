@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.Scanner;
 
 //TO DO
-//* write disk0, disk1 and parity on real files
+//* write disk0, disk1 and parity on real files (????)
 //* check if the file was deleted to then recover it
 
 public class Main {
@@ -168,7 +168,10 @@ public class Main {
     }
     //endregion
 
+
     public static void main(String[] args) throws FileNotFoundException {
+
+        createFile();
 
         int fileLength = (int)file.length();
         byte[] bytesArray = new byte[lengthFile];
@@ -177,20 +180,70 @@ public class Main {
 
         int count = 0;
 
-        byte[] disk0;
-        byte[] disk1;
-        byte[] parity;
+        byte[] disk0Byte;
+        byte[] disk1Byte;
+        byte[] parityByte;
 
+        //dividing file in two different disks
         for(byte element : bytesArray) {
             if(count < (bytesArray/2)) {
-                disk0[count] = element;
+                disk0Byte[count] = element;
             } else {
-                disk1[count] = element;
+                disk1Byte[count] = element;
             }
         }
 
+        //call method to fill the parity disk
         parity = fillParity(disk0, disk1);
 
+        //write disks into real files
+        try {
+            disk0 = new File(PATH + "disk0.txt");
+            PrintWriter w = new PrintWriter(disk0);
+            for(byte element : disk0Byte) {
+                w.println(element);
+            }
+            System.out.println("Arquivo criado com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Não foi possível criar o arquivo solicitado!");
+        }
+
+        try {
+            disk0 = new File(PATH + "disk1.txt");
+            PrintWriter w = new PrintWriter(disk1);
+            for(byte element : disk1Byte) {
+                w.println(element);
+            }
+            System.out.println("Arquivo criado com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Não foi possível criar o arquivo solicitado!");
+        }
+
+        try {
+            parity = new File(PATH + "parity.txt");
+            PrintWriter w = new PrintWriter(parity);
+            for(byte element : parityByte) {
+                w.println(element);
+            }
+            System.out.println("Arquivo criado com sucesso!");
+        } catch (IOException e) {
+            System.out.println("Não foi possível criar o arquivo solicitado!");
+        }
+        
 
     }
+
+    // private static File writeDiskInFile(byte[] disk) {
+    //     try {
+    //         parity = new File(PATH + "parity.txt");
+    //         PrintWriter w = new PrintWriter(parity);
+    //         for(byte element : parityByte) {
+    //             w.println(element);
+    //         }
+    //         System.out.println("Arquivo criado com sucesso!");
+    //     } catch (IOException e) {
+    //         System.out.println("Não foi possível criar o arquivo solicitado!");
+    //     }
+        
+    // }
 }
