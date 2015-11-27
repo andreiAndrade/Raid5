@@ -192,30 +192,15 @@ public class Main {
                 disk1Byte[count] = element;
             }
         }
- 
-        //call method to fill the parity disk
-         parity = fillParity(disk0, disk1);
- 
-        //write disks into real files
-        try {
-            disk0 = new File(PATH + "disk0.txt");
-            PrintWriter w = new PrintWriter(disk0);
-            for(byte element : disk0Byte) {
-                w.println(element);
-            }
-            System.out.println("Arquivo criado com sucesso!");
-        } catch (IOException e) {
-            System.out.println("Não foi possível criar o arquivo solicitado!");
-        }
 
         //call method to fill the parity disk
-        parity = fillParity(disk0, disk1);
+        parity = fillParity(disk0Byte, disk1Byte);
 
         //write disks into real files
         try {
-            disk0 = new File(PATH + "disk0.txt");
-            PrintWriter w = new PrintWriter(disk0);
             for(byte element : disk0Byte) {
+                File disk0file = new File(PATH + disk0 + "disk0_byte" + element + ".txt");
+                PrintWriter w = new PrintWriter(disk0file);
                 w.println(element);
             }
             System.out.println("Arquivo criado com sucesso!");
@@ -224,8 +209,8 @@ public class Main {
         }
 
         try {
-            disk0 = new File(PATH + "disk1.txt");
-            PrintWriter w = new PrintWriter(disk1);
+            File disk1file = new File(PATH + disk1 + "disk1_byte" + element + ".txt");
+            PrintWriter w = new PrintWriter(disk1file);
             for(byte element : disk1Byte) {
                 w.println(element);
             }
@@ -236,8 +221,8 @@ public class Main {
 
 
         try {
-            parity = new File(PATH + "parity.txt");
-            PrintWriter w = new PrintWriter(parity);
+            File parityfile = new File(PATH + parity + "parity_byte" + element + ".txt");
+            PrintWriter w = new PrintWriter(parityfile);
             for(byte element : parityByte) {
                 w.println(element);
             }
