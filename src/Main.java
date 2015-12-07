@@ -23,6 +23,26 @@ public class Main {
 
     //region PrivateMethods
 
+    //Apaga todas pastas e arquivos
+    private static void clean() {
+        File disk0 = new File(PATH, DISK0);
+        File disk1 = new File(PATH, DISK1);
+
+        String[] contentsDisk0 = disk0.list();
+        for (String content : contentsDisk0){
+            new File(disk0, content).delete();
+        }
+        if (!disk0.delete()) System.out.println("Disk0 não pode ser limpo!");
+        else System.out.println("Disk0 limpo com sucesso!");
+
+        String[] contentsDisk1 = disk1.list();
+        for (String content : contentsDisk1){
+            new File(disk1, content).delete();
+        }
+        if (!disk1.delete()) System.out.println("Disk1 não pode ser limpo!");
+        else System.out.println("Disk1 limpo com sucesso!");
+    }
+
     //Cria diretórios que representaram os disco 0, 1 e de paridade REFATORADO
     private static void createDisks(String... names){
         File disk;
@@ -38,40 +58,41 @@ public class Main {
     //Cria o arquivo original REFATORADO
     private static File createFileOriginal(){
         try {
+
             File file = new File(PATH + "Hino.txt");
             PrintWriter w = new PrintWriter(file);
 
-            w.println("Glória do desporto nacional");
+            w.println("Gloria do desporto nacional");
             w.println("Oh, Internacional");
             w.println("Que eu vivo a exaltar");
             w.println("Levas a plagas distantes");
             w.println("Feitos relevantes");
             w.println("Vives a brilhar");
-            w.println("Correm os anos, surge o amanhã");
+            w.println("Correm os anos, surge o amanha");
             w.println("Radioso de luz, varonil");
-            w.println("Segue a tua senda de vitórias");
-            w.println("Colorado das glórias");
+            w.println("Segue a tua senda de vitorias");
+            w.println("Colorado das glorias");
             w.println("Orgulho do Brasil");
             w.println("");
-            w.println("É teu passado alvirubro");
-            w.println("Motivo de festas em nossos corações");
+            w.println("E teu passado alvirubro");
+            w.println("Motivo de festas em nossos coracoes");
             w.println("O teu presente diz tudo");
-            w.println("Trazendo à torcida alegres emoções");
+            w.println("Trazendo à torcida alegres emocoes");
             w.println("Colorado de ases celeiro");
-            w.println("Teus astros cintilam num céu sempre azul");
+            w.println("Teus astros cintilam num ceu sempre azul");
             w.println("Vibra o Brasil inteiro");
             w.println("Com o clube do povo do Rio Grande do Sul");
             w.println("");
-            w.println("Glória do desporto nacional");
+            w.println("Gloria do desporto nacional");
             w.println("Oh, Internacional");
             w.println("Que eu vivo a exaltar");
             w.println("Levas a plagas distantes");
             w.println("Feitos relevantes");
             w.println("Vives a brilhar");
-            w.println("Correm os anos, surge o amanhã");
+            w.println("Correm os anos, surge o amanha");
             w.println("Radioso de luz, varonil");
-            w.println("Segue a tua senda de vitórias");
-            w.println("Colorado das glórias");
+            w.println("Segue a tua senda de vitorias");
+            w.println("Colorado das glorias");
             w.println("Orgulho do Brasil");
             w.close();
             System.out.printf("Arquivo %s criado com sucesso!", file.getName());
@@ -87,7 +108,7 @@ public class Main {
 
         int fileLength = (int)file.length();
         byte[] bytesArray = new byte[fileLength];
-        FileInputStream fileLikeStream  = null;
+        FileInputStream fileLikeStream;
 
         try {
 
@@ -107,9 +128,9 @@ public class Main {
     private static void saveFileWithRAID5(byte[] bytesArray){
         //variaveis locais
         boolean addFirstDisk = true;
-        List<Byte> file0 = new ArrayList<>();
-        List<Byte> file1 = new ArrayList<>();
-        List<Byte> fileParity = new ArrayList<>();
+        List<Byte> file0 = new ArrayList();
+        List<Byte> file1 = new ArrayList();
+        List<Byte> fileParity = new ArrayList();
 
         //preenche os discos com os arquivos de bytes
         for(byte element : bytesArray) {
@@ -149,7 +170,7 @@ public class Main {
         File disk0 = new File(PATH + DISK0);
         File disk1 = new File(PATH + DISK1);
 
-        System.out.println("--Remover disco--");
+        System.out.println("\n--Remover disco--");
         System.out.println("Escolha o disco:");
         System.out.println("0. Disk0;");
         System.out.println("1. Disk1.");
@@ -195,33 +216,39 @@ public class Main {
         } else if (!pathDisk0.exists() && !pathDisk1.exists()){
             System.out.println("Impossivel recuperar os arquivos. Os dois discos foram corrompidos!");
         } else if (!pathDisk0.exists()){
-            recoveryDisk(DISK0, FILE0);
+            //Manda o disco para ser criado e o arquivo para fazer paridade
+            recoveryDisk(DISK0, FILE1);
         } else {
-            recoveryDisk(DISK1, FILE1);
+            //Manda o disco para ser criado e o arquivo para fazer paridade
+            recoveryDisk(DISK1, FILE0);
         }
     }
 
-    private static void recoveryDisk(String disk, String file){
+    private static void recoveryDisk(String diskForCreate, String fileForParity){
         try {
             //recria disco apagado
-            createDisks(disk);
+            createDisks(diskForCreate);
             //recria arquivo apagado
-            File recoveredFile = new File(PATH + disk, FILERECOVERED);
-
-            Scanner readFile = new Scanner(new FileReader(new File(PATH + disk, file))).useDelimiter("\\n");
-            Scanner readFileParity = new Scanner(new FileReader(new File(PATH + disk, FILEPARITY))).useDelimiter("\\n");
+            File recoveredFile = new File(PATH + diskForCreate, FILERECOVERED);
+            //Disco existente
+            String diskForParity = (diskForCreate.equals(DISK0) ? DISK1 : DISK0);
+            //Cria um leitor do arquivo para criar a paridade
+            Scanner readFile = new Scanner(new FileReader(new File(PATH + diskForParity, fileForParity))).useDelimiter("\\n");
+            //Cria um leitor do arquivo de paridade para criar a paridade
+            Scanner readFileParity = new Scanner(new FileReader(new File(PATH + PARITY, FILEPARITY))).useDelimiter("\\n");
 
             byte byte0;
             byte byteParity;
-            List<Byte> bytesArrayFile = new ArrayList<>();
+            List<Byte> bytesArrayFile = new ArrayList();
 
             while (readFileParity.hasNext()) {
                 byte0 = (readFile.hasNext()) ? Byte.parseByte(readFile.next().replace("\r", "")) : 0;
                 byteParity = Byte.parseByte(readFileParity.next().replace("\r", ""));
-                bytesArrayFile.add((file.equals(FILE0)) ? (byte) (byte0 - byteParity) : (byte) (byteParity + byte0));
+                bytesArrayFile.add((fileForParity.equals(FILE0)) ? (byte) (byteParity + byte0) : (byte) (byte0 - byteParity));
             }
 
             fillBytesFile(bytesArrayFile, recoveredFile);
+            System.out.println("\nRecuperando arquivo!");
             System.out.println("Arquivo recuperado com sucesso!");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -230,8 +257,10 @@ public class Main {
 
     //Remonta os arquivo
     private static void remakeFile() {
-        List<Byte> fullFile = new ArrayList<>();
-        Scanner sc;
+        boolean readDisk0 = false;
+        List<Byte> fullFile = new ArrayList();
+        Scanner scDisk0;
+        Scanner scDisk1;
         byte[] fullFileArray;
         String[] contentDisk0 = new File(PATH + DISK0).list();
         String[] contentDisk1 = new File(PATH + DISK1).list();
@@ -239,19 +268,28 @@ public class Main {
         File file1 = new File(PATH + DISK1, contentDisk1[0]);
 
         try {
-            sc = new Scanner(file0);
-            while (sc.hasNext()){
-                fullFile.add(Byte.parseByte(sc.next()));
+            scDisk0 = new Scanner(file0);
+            scDisk1 = new Scanner(file1);
+            while (scDisk0.hasNext() || scDisk1.hasNext()){
+                if (readDisk0)
+                    fullFile.add(Byte.parseByte(scDisk0.next()));
+                else
+                    fullFile.add(Byte.parseByte(scDisk1.next()));
+                readDisk0 = !readDisk0;
             }
-            sc = new Scanner(file1);
-            while (sc.hasNext()){
-                fullFile.add(Byte.parseByte(sc.next()));
-            }
+
             fullFileArray = new byte[fullFile.size()];
             for (int i = 0; i < fullFile.size(); i++){
                 fullFileArray[i] = fullFile.get(i);
             }
             String s = new String(fullFileArray);
+
+            File remakeFile = new File(PATH, "HinoRecuperado.txt");
+            PrintWriter w = new PrintWriter(remakeFile);
+            w.print(s);
+            w.close();
+
+            System.out.println("\nArquivo...\n");
             System.out.println(s);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -261,6 +299,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
+        clean();
         createDisks(DISK0, DISK1, PARITY);
 
         File fileOriginal = createFileOriginal();
@@ -268,7 +307,7 @@ public class Main {
         saveFileWithRAID5(fileLikeByte);
         deleteDisk();
         findDiskCorrupted();
-//        remakeFile();
+        remakeFile();
 
  
     }
